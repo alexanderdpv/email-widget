@@ -1,0 +1,16 @@
+.search-results ul {
+  background-color: white;
+  list-style-type: none;
+  margin: 0;
+  padding-left: 1.5rem;
+  width: 20rem;
+}
+
+.search-results-email {
+  color: white;
+}
+
+.selected {
+  background-color: #296AD2;
+  color: white;
+}

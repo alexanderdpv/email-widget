@@ -1,0 +1,13 @@
+.email-input {
+  text-align: left;
+}
+
+.email-input-label {
+  color: grey;
+  display: inline-block;
+  padding: 1rem;
+}
+
+.email-input-field {
+  line-height: 1.25rem;
+}
