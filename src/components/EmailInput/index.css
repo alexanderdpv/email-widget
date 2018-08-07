@@ -5,7 +5,7 @@
 .email-input-label {
   color: grey;
   display: inline-block;
-  padding: 1rem;
+  padding: 1rem 1rem 0;
 }
 
 .email-input-field {

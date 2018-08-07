@@ -1,8 +1,12 @@
 .search-results ul {
   background-color: white;
+  border: 1px solid light-grey;
+  border-radius: 2px;
   list-style-type: none;
-  margin: 0;
-  padding-left: 1.5rem;
+  margin-left: 3.5rem;
+  padding-left: 0;
+  position: relative;
+  top: -1rem;
   width: 20rem;
 }
 
