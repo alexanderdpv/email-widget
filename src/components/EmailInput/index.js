@@ -39,12 +39,13 @@ class EmailInput extends Component {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.resetState = this.resetState.bind(this);
+    this.highlightSection = this.highlightSection.bind(this);
   };
 
   onEmailChange(e) {
     const { value } = this.state;
 
-    this.setState({ value: e.target.value });
+    this.setState({ value : e.target.value });
 
     if (e.target.value && !e.target.value.endsWith(' ')) {
       this.setState({ search_results: SEARCH_RESULTS });
@@ -70,7 +71,7 @@ class EmailInput extends Component {
   }
 
   onKeyDown(e) {
-    const { user_selection, search_results } = this.state;
+    const { user_selection, search_results, value } = this.state;
 
     if (!search_results) {
       return;
@@ -95,7 +96,7 @@ class EmailInput extends Component {
 
       if (user_selection >= 0) {
         this.setState({
-          [e.target.name] : search_results.users[user_selection].email.concat(','),
+          value : search_results.users[user_selection].email.concat(','),
         });
         this.resetState();
       } else {
@@ -104,17 +105,24 @@ class EmailInput extends Component {
     }
   }
 
+  highlightSection(e, i) {
+    this.setState({
+      user_selection : i,
+    });
+  }
+
   render() {
-    const { label } = this.props;
+    const { label, name } = this.props;
     const { value, search_results, user_selection } = this.state;
 
     return (
       <div className="email-input">
         <label className="email-input-label">{label}</label>
-        <input className="email-input-field" type="text"
+        <input className="email-input-field" type="text" name={name}
           value={value} onChange={this.onEmailChange} onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}/>
 
-        {search_results ? <SearchResults search_results={search_results} userSelection={user_selection} /> : ''}
+        {search_results ? <SearchResults search_results={search_results}
+          userSelection={user_selection} highlightSection={this.highlightSection} /> : ''}
       </div>
     );
   }

@@ -43,8 +43,8 @@ class App extends Component {
       <div className="App">
         <form name="emailForm" onSubmit={this.sendEmail}>
 
-          <EmailInput label="To: " required={true}/>
-          <EmailInput label="CC: "/>
+          <EmailInput label="To: " name="to" required={true}/>
+          <EmailInput label="CC: " name="cc"/>
 
           <label>Subject: </label>
           <input type="text" name="subject" value={subject} onChange={this.onTextChange}/>
