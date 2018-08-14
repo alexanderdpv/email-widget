@@ -73,6 +73,7 @@ class App extends Component {
 
   callbackChild = (key, data) => {
     this.setState({ [key]: data });
+    this.validateFields();
   };
 
   onEmailChange(e) {

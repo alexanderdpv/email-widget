@@ -17,8 +17,8 @@ class EmailInput extends Component {
     this.onKeyUp = this.onKeyUp.bind(this);
     this.clearSearchResults = this.clearSearchResults.bind(this);
     this.onResultsHover = this.onResultsHover.bind(this);
-    this.onResultsClick = this.onResultsClick.bind(this);
     this.updateValue = this.updateValue.bind(this);
+    this.onResultsSelect = this.onResultsSelect.bind(this);
   };
 
   clearSearchResults() {
@@ -30,7 +30,6 @@ class EmailInput extends Component {
   }
 
   onKeyDown(e) {
-    const { multiple, value } = this.props;
     const { user_selection, search_results } = this.state;
 
     if (search_results) {
@@ -40,30 +39,23 @@ class EmailInput extends Component {
 
       if (e.key === "ArrowUp" && user_selection > -1) {
         e.preventDefault();
-        this.setState({ user_selection : user_selection - 1});
+        this.setState({ user_selection : user_selection - 1 });
       }
 
       if ((e.key === "ArrowDown" || e.key === "Tab") && user_selection < (search_results.users.length - 1)) {
         e.preventDefault();
-        this.setState({ user_selection : user_selection + 1});
+        this.setState({ user_selection : user_selection + 1 });
       }
 
       if (e.key === "Enter") {
         e.preventDefault();
 
-        // Select from list of suggested emails
         if (user_selection >= 0) {
-          const emailSelected = search_results.users[user_selection].email;
-
-          // Create a list for inputs that allow multiple emails
-          if (multiple && value.includes(",")) {
-            let updatedValue = value.substring(0, value.lastIndexOf(',') + 1) + emailSelected;
-            this.props.callback(e.target.name, updatedValue);
-          } else {
-            this.props.callback(e.target.name, search_results.users[user_selection].email);
-          }
+          this.onResultsSelect();
+        } else {
+          this.updateValue(e);
+          this.clearSearchResults();
         }
-        this.clearSearchResults();
       }
     }
   }
@@ -72,25 +64,25 @@ class EmailInput extends Component {
     this.setState({ user_selection : i });
   }
 
-  onResultsClick(e, i) {
-    const { value } = this.state;
-    const { multiple } = this.props;
+  onResultsSelect() {
+    const { callback, multiple, name, value } = this.props;
+    const { user_selection, search_results } = this.state;
 
-    if (multiple) {
-      // append to list of emails
-      let updatedValue = value.substring(0, value.lastIndexOf(',') + 1);
-      this.setState({
-        value : updatedValue + e.target.innerText,
-      });
+    // Create a list for inputs that allow multiple emails
+    // Set input value to single email for inputs that don't allow multiple
+    if (multiple && value.includes(",") && user_selection >= 0) {
+      const emailSelected = search_results.users[user_selection].email;
+      let updatedValue = value.substring(0, value.lastIndexOf(',') + 1) + emailSelected.concat(",");
+
+      callback(name, updatedValue);
     } else {
-      this.setState({ value : e.target.innerText });
+      callback(name, search_results.users[user_selection].email);
     }
-
     this.clearSearchResults();
   }
 
   updateValue(e) {
-    const { onChange } = this.props;
+    const { callback, name } = this.props;
 
     if (e.target.value && !e.target.value.trim().endsWith(",")) {
       this.setState({ search_results: SEARCH_RESULTS });
@@ -98,7 +90,8 @@ class EmailInput extends Component {
       this.clearSearchResults();
     }
 
-    onChange(e);
+    // Passes value to the parent component
+    callback(name, e.target.value);
   }
 
   render() {
@@ -113,7 +106,7 @@ class EmailInput extends Component {
 
         {search_results ? <SearchResults search_results={search_results}
           userSelection={user_selection} onResultsHover={this.onResultsHover}
-          onResultsClick={this.onResultsClick}/> : ''}
+          onResultsClick={this.onResultsSelect}/> : ''}
       </div>
     );
   }
