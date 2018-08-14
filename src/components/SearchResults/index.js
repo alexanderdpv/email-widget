@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 
 class SearchResults extends Component {
   render() {
-    const { userSelection, search_results, highlightSection, hoverSelection } = this.props;
+    const { userSelection, search_results, onResultsHover, onResultsClick } = this.props;
 
     return(
       <div>
@@ -14,7 +14,7 @@ class SearchResults extends Component {
             {search_results.users.map((user, i) =>
               <li key={i} className="search-results-email">
                 <Typography className={userSelection === i ? 'selected' : ''}
-                  onMouseOver={(e) => highlightSection(e, i)} onClick={(e) => hoverSelection(e, i)}>
+                  onMouseOver={(e) => onResultsHover(e, i)} onClick={(e) => onResultsClick(e, i)}>
                   {user.email}
                 </Typography>
               </li>

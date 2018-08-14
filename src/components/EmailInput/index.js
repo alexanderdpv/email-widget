@@ -16,8 +16,8 @@ class EmailInput extends Component {
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.clearSearchResults = this.clearSearchResults.bind(this);
-    this.highlightSection = this.highlightSection.bind(this);
-    this.hoverSelection = this.hoverSelection.bind(this);
+    this.onResultsHover = this.onResultsHover.bind(this);
+    this.onResultsClick = this.onResultsClick.bind(this);
     this.updateValue = this.updateValue.bind(this);
   };
 
@@ -33,7 +33,6 @@ class EmailInput extends Component {
     const { multiple, value } = this.props;
     const { user_selection, search_results } = this.state;
 
-    // TODO: refactor to swtich statement
     if (search_results) {
       if (e.key === "," || e.key === " ") {
         this.clearSearchResults();
@@ -52,36 +51,28 @@ class EmailInput extends Component {
       if (e.key === "Enter") {
         e.preventDefault();
 
-        // selection via search results
+        // Select from list of suggested emails
         if (user_selection >= 0) {
           const emailSelected = search_results.users[user_selection].email;
 
-          if (multiple) {
-            let updatedValue = "";
-
-            if (value.includes(",")) {
-              updatedValue = value.substring(0, value.lastIndexOf(',') + 1)
-                + emailSelected;
-            } else {
-              updatedValue = emailSelected;
-            }
-
+          // Create a list for inputs that allow multiple emails
+          if (multiple && value.includes(",")) {
+            let updatedValue = value.substring(0, value.lastIndexOf(',') + 1) + emailSelected;
             this.props.callback(e.target.name, updatedValue);
           } else {
             this.props.callback(e.target.name, search_results.users[user_selection].email);
           }
         }
-
         this.clearSearchResults();
       }
     }
   }
 
-  highlightSection(e, i) {
+  onResultsHover(e, i) {
     this.setState({ user_selection : i });
   }
 
-  hoverSelection(e, i) {
+  onResultsClick(e, i) {
     const { value } = this.state;
     const { multiple } = this.props;
 
@@ -121,8 +112,8 @@ class EmailInput extends Component {
           onChange={this.updateValue} onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}/>
 
         {search_results ? <SearchResults search_results={search_results}
-          userSelection={user_selection} highlightSection={this.highlightSection}
-          hoverSelection={this.hoverSelection}/> : ''}
+          userSelection={user_selection} onResultsHover={this.onResultsHover}
+          onResultsClick={this.onResultsClick}/> : ''}
       </div>
     );
   }
