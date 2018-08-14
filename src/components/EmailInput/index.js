@@ -1,29 +1,7 @@
 import React, { Component } from 'react';
 import './index.css';
 import SearchResults from '../SearchResults';
-
-const SEARCH_RESULTS = {
-  users: [
-    {
-      id: "1",
-      email: "alexander.dpv@gmail.com",
-      firstName: "Alexander",
-      lastName: "DPV",
-    },
-    {
-      id: "2",
-      email: "john.doe@yahoo.com",
-      firstName: "John",
-      lastName: "Doe",
-    },
-    {
-      id: "3",
-      email: "bob.smith@gmail.com",
-      firstName: "Bob",
-      lastName: "Smith",
-    },
-  ]
-};
+import { SEARCH_RESULTS } from '../../constants/index.js';
 
 class EmailInput extends Component {
   constructor(props) {
