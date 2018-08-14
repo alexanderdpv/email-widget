@@ -1,13 +1,20 @@
 .search-results ul {
   background-color: white;
-  border: 1px solid light-grey;
+  border-left: 1px solid #EEE;
+  border-right: 1px solid #EEE;
+  border-bottom: 1px solid #EEE;
   border-radius: 2px;
+  margin: 0;
   list-style-type: none;
-  margin-left: 3.5rem;
-  padding-left: 0;
+  padding: 0;
   position: relative;
-  top: -1rem;
-  width: 20rem;
+  width: auto;
+}
+
+.search-results li {
+  line-height: 1.75rem;
+  padding-left: .5rem;
+  text-align: left;
 }
 
 .search-results-email {
