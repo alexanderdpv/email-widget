@@ -6,7 +6,6 @@ import {
 } from '../../constants/index.js';
 import axios from 'axios';
 import EmailInput from '../EmailInput';
-import Button from '@material-ui/core/Button';
 import Snackbar from '@material-ui/core/Snackbar';
 
 class App extends Component {
@@ -21,7 +20,6 @@ class App extends Component {
       openNotification: false,
       email_status: "",
       validForm: false,
-      invalidFields: null,
     }
 
     this.sendEmail = this.sendEmail.bind(this);
@@ -83,7 +81,7 @@ class App extends Component {
   }
 
   validateFields() {
-    const { to, subject, body, validForm } = this.state;
+    const { to, subject, body } = this.state;
 
     if (!to || !subject || !body) {
       this.setState({ validForm: false });
@@ -105,7 +103,7 @@ class App extends Component {
           <input type="text" name="subject" value={subject} onChange={this.onEmailChange} required/>
 
           <textarea name="body" value={body} onChange={this.onEmailChange} required/>
-          <Button type="submit" variant="contained" color="primary" disabled={!validForm}>Send</Button>
+          <button type="submit" disabled={!validForm}>Send</button>
         </form>
 
         <Snackbar

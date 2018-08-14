@@ -5,19 +5,19 @@ import SearchResults from '../SearchResults';
 const SEARCH_RESULTS = {
   users: [
     {
-      id: "1000",
+      id: "1",
       email: "alexander.dpv@gmail.com",
       firstName: "Alexander",
       lastName: "DPV",
     },
     {
-      id: "1001",
+      id: "2",
       email: "john.doe@yahoo.com",
       firstName: "John",
       lastName: "Doe",
     },
     {
-      id: "1002",
+      id: "3",
       email: "bob.smith@gmail.com",
       firstName: "Bob",
       lastName: "Smith",
@@ -33,34 +33,34 @@ class EmailInput extends Component {
       value: "",
       search_results: null,
       user_selection: -1,
-      search: false,
     }
 
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
-    this.resetState = this.resetState.bind(this);
+    this.clearSearchResults = this.clearSearchResults.bind(this);
     this.highlightSection = this.highlightSection.bind(this);
     this.hoverSelection = this.hoverSelection.bind(this);
     this.updateValue = this.updateValue.bind(this);
   };
 
-  onKeyUp(e) {
-    e.preventDefault();
+  clearSearchResults() {
+    this.setState({ search_results: null, user_selection: -1 });
   }
 
-  resetState() {
-    this.setState({ search_results: null, user_selection: -1 });
+  onKeyUp(e) {
+    e.preventDefault();
   }
 
   onKeyDown(e) {
     const { multiple, value } = this.props;
     const { user_selection, search_results } = this.state;
 
-    if (e.key === "," || e.key === " ") {
-      this.resetState();
-    }
-
+    // TODO: refactor to swtich statement
     if (search_results) {
+      if (e.key === "," || e.key === " ") {
+        this.clearSearchResults();
+      }
+
       if (e.key === "ArrowUp" && user_selection > -1) {
         e.preventDefault();
         this.setState({ user_selection : user_selection - 1});
@@ -94,7 +94,7 @@ class EmailInput extends Component {
           }
         }
 
-        this.resetState();
+        this.clearSearchResults();
       }
     }
   }
@@ -117,7 +117,7 @@ class EmailInput extends Component {
       this.setState({ value : e.target.innerText });
     }
 
-    this.resetState();
+    this.clearSearchResults();
   }
 
   updateValue(e) {
@@ -126,7 +126,7 @@ class EmailInput extends Component {
     if (e.target.value && !e.target.value.trim().endsWith(",")) {
       this.setState({ search_results: SEARCH_RESULTS });
     } else {
-      this.resetState();
+      this.clearSearchResults();
     }
 
     onChange(e);
@@ -139,7 +139,7 @@ class EmailInput extends Component {
     return (
       <div className="email-input">
         <label className="email-input-label">{label}</label>
-        <input className="email-input-field" type="email" name={name} value={value} multiple={multiple} required={required}
+        <input className="email-input-field" type="text" name={name} value={value} multiple={multiple} required={required}
           onChange={this.updateValue} onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}/>
 
         {search_results ? <SearchResults search_results={search_results}
