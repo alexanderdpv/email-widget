@@ -17,7 +17,6 @@ class App extends Component {
       cc: "",
       subject: "",
       body: "",
-      openNotification: true,
       emailStatusMessage: "",
       emailStatus: "",
       validForm: false,
@@ -41,7 +40,6 @@ class App extends Component {
             this.setState({
               emailStatusMessage: "Email successfully sent",
               emailStatus: "success",
-              openNotification : true,
             });
             this.resetForm();
             break;
@@ -60,8 +58,6 @@ class App extends Component {
           default:
             break;
         };
-
-        this.setState({ openNotification : true });
       });
   }
 
@@ -96,7 +92,7 @@ class App extends Component {
   }
 
   render() {
-    const { to, cc, subject, body, emailStatusMessage, validForm, openNotification, emailStatus } = this.state;
+    const { to, cc, subject, body, emailStatusMessage, validForm, emailStatus } = this.state;
 
     return (
       <div className="App">
@@ -110,7 +106,7 @@ class App extends Component {
           <button type="submit" disabled={!validForm}>Send</button>
         </form>
 
-        {openNotification ? <EmailStatus status={emailStatus} message={emailStatusMessage}/> : ''}
+        <EmailStatus status={emailStatus} message={emailStatusMessage}/>
       </div>
     );
   }
