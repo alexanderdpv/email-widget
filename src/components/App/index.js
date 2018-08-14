@@ -71,7 +71,7 @@ class App extends Component {
     });
   }
 
-  callbackChild = (key, data) => {
+  onValueUpdate = (key, data) => {
     this.setState({ [key]: data });
     this.validateFields();
   };
@@ -97,8 +97,8 @@ class App extends Component {
     return (
       <div className="App">
         <form name="emailForm" onSubmit={this.sendEmail}>
-          <EmailInput label="To: " name="to" value={to} onChange={this.onEmailChange} callback={this.callbackChild} required={true} multiple={false} ref={node => this.toInputField = node}/>
-          <EmailInput label="CC: " name="cc" value={cc} onChange={this.onEmailChange} callback={this.callbackChild} required={false} multiple={true} ref={node => this.ccInputField = node}/>
+          <EmailInput label="To: " name="to" value={to} onValueUpdate={this.onValueUpdate} required={true} multiple={false} ref={node => this.toInputField = node}/>
+          <EmailInput label="CC: " name="cc" value={cc} onValueUpdate={this.onValueUpdate} required={false} multiple={true} ref={node => this.ccInputField = node}/>
 
           <label className="input-label">Subject: </label>
           <input type="text" name="subject" value={subject} onChange={this.onEmailChange} required/>

@@ -65,7 +65,7 @@ class EmailInput extends Component {
   }
 
   onResultsSelect() {
-    const { callback, multiple, name, value } = this.props;
+    const { onValueUpdate, multiple, name, value } = this.props;
     const { user_selection, search_results } = this.state;
 
     // Create a list for inputs that allow multiple emails
@@ -74,15 +74,15 @@ class EmailInput extends Component {
       const emailSelected = search_results.users[user_selection].email;
       let updatedValue = value.substring(0, value.lastIndexOf(',') + 1) + emailSelected.concat(",");
 
-      callback(name, updatedValue);
+      onValueUpdate(name, updatedValue);
     } else {
-      callback(name, search_results.users[user_selection].email);
+      onValueUpdate(name, search_results.users[user_selection].email);
     }
     this.clearSearchResults();
   }
 
   updateValue(e) {
-    const { callback, name } = this.props;
+    const { onValueUpdate, name } = this.props;
 
     if (e.target.value && !e.target.value.trim().endsWith(",")) {
       this.setState({ search_results: SEARCH_RESULTS });
@@ -91,7 +91,7 @@ class EmailInput extends Component {
     }
 
     // Passes value to the parent component
-    callback(name, e.target.value);
+    onValueUpdate(name, e.target.value);
   }
 
   render() {
