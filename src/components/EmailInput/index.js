@@ -98,8 +98,7 @@ class EmailInput extends Component {
 
     return (
       <div className="email-input">
-        <label className="email-input-label">{label}</label>
-        <input className="email-input-field" type="text" name={name} value={value} multiple={multiple} required={required}
+        <input className="email-input-field" type="text" placeholder={label} name={name} value={value} multiple={multiple} required={required}
           onChange={this.updateValue} onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}/>
 
         {search_results ? <SearchResults search_results={search_results}

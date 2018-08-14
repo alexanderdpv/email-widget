@@ -17,8 +17,9 @@ class App extends Component {
       cc: "",
       subject: "",
       body: "",
-      openNotification: false,
+      openNotification: true,
       emailStatusMessage: "",
+      emailStatus: "",
       validForm: false,
     }
 
@@ -39,6 +40,7 @@ class App extends Component {
           case 200:
             this.setState({
               emailStatusMessage: "Email successfully sent",
+              emailStatus: "success",
               openNotification : true,
             });
             this.resetForm();
@@ -50,10 +52,10 @@ class App extends Component {
       .catch(error => {
         switch(error.response.status) {
           case 400:
-            this.setState({ emailStatusMessage: "Invalid input"});
+            this.setState({ emailStatusMessage: "Invalid input", emailStatus: "invalid"});
             break;
           case 500:
-            this.setState({ emailStatusMessage: "Error occurred – resubmit email"});
+            this.setState({ emailStatusMessage: "Error occurred – resubmit email", emailStatus: "error"});
             break;
           default:
             break;
@@ -69,8 +71,6 @@ class App extends Component {
       cc: "",
       subject: "",
       body: "",
-      openNotification: false,
-      emailStatusMessage: "",
       validForm: false,
     });
   }
@@ -96,22 +96,21 @@ class App extends Component {
   }
 
   render() {
-    const { to, cc, subject, body, emailStatusMessage, validForm, openNotification } = this.state;
+    const { to, cc, subject, body, emailStatusMessage, validForm, openNotification, emailStatus } = this.state;
 
     return (
       <div className="App">
-        <form name="emailForm" onSubmit={this.sendEmail}>
-          <EmailInput label="To: " name="to" value={to} onValueUpdate={this.onValueUpdate} required={true} multiple={false}/>
-          <EmailInput label="CC: " name="cc" value={cc} onValueUpdate={this.onValueUpdate} required={false} multiple={true}/>
+        <form className="email-form" name="emailForm" onSubmit={this.sendEmail}>
+          <EmailInput label="To" name="to" value={to} onValueUpdate={this.onValueUpdate} required={true} multiple={false}/>
+          <EmailInput label="CC" name="cc" value={cc} onValueUpdate={this.onValueUpdate} required={false} multiple={true}/>
 
-          <label className="input-label">Subject: </label>
-          <input type="text" name="subject" value={subject} onChange={this.onEmailChange} required/>
+          <input type="text" name="subject" placeholder="Subject" value={subject} onChange={this.onEmailChange} required/>
 
           <textarea name="body" value={body} onChange={this.onEmailChange} required/>
           <button type="submit" disabled={!validForm}>Send</button>
         </form>
 
-        {openNotification ? <EmailStatus message={emailStatusMessage}/> : ''}
+        {openNotification ? <EmailStatus status={emailStatus} message={emailStatusMessage}/> : ''}
       </div>
     );
   }

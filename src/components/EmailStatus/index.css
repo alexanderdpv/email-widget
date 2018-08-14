@@ -1,0 +1,24 @@
+.email-status {
+  background-color: #283593;
+  height: 4rem;
+  line-height: 4rem;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.email-status-message {
+  color: white;
+}
+
+.error {
+  background-color: #F44336;
+}
+
+.invalid {
+  background-color: #283593;
+}
+
+.success {
+  background-color: #2E7D32;
+}

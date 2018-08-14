@@ -3,11 +3,12 @@ import './index.css';
 
 class EmailStatus extends Component {
   render() {
-    const { message } = this.props;
+    const { status, message } = this.props;
+    const classes = `${status} email-status`;
 
     return(
-      <div className="email-status">
-        <span>{message}</span>
+      <div className={classes}>
+        <span className="email-status-message">{message}</span>
       </div>
     )
   }

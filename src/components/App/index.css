@@ -4,7 +4,7 @@ textarea {
   margin-top: 2rem;
   margin-bottom: 2rem;
   height: 100px;
-  width: 600px;
+  width: 100%;
 }
 
 input {
@@ -41,24 +41,36 @@ input {
   font-size: large;
 }
 
-label {
-  display: block;
+.email-form {
+  padding: 0 4rem;
 }
 
 textarea {
   display: block;
+  font-size: .85rem;
 }
 
 input {
-  width: 80%;
+  font-size: .85rem;
+  line-height: 1.75rem;
+  width: 100%;
 }
 
 button {
+  background-color: #1565C0;
+  border-radius: 5px;
   display: block;
-  width: 5rem;
+  color: white;
+  font-size: .85rem;
+  padding: 1rem;
+  width: 6rem;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+button:hover {
+  background-color: #1E88E5;
+}
+
+button:disabled {
+  background-color: #9E9E9E;
+  color: #757575;
 }
