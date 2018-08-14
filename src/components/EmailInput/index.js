@@ -67,16 +67,14 @@ class EmailInput extends Component {
   onResultsSelect() {
     const { onValueUpdate, multiple, name, value } = this.props;
     const { user_selection, search_results } = this.state;
+    const emailSelected = search_results.users[user_selection].email;
 
     // Create a list for inputs that allow multiple emails
-    // Set input value to single email for inputs that don't allow multiple
-    if (multiple && value.includes(",") && user_selection >= 0) {
-      const emailSelected = search_results.users[user_selection].email;
+    if (multiple && value.includes(",")) {
       let updatedValue = value.substring(0, value.lastIndexOf(',') + 1) + emailSelected.concat(",");
-
       onValueUpdate(name, updatedValue);
     } else {
-      onValueUpdate(name, search_results.users[user_selection].email);
+      onValueUpdate(name, emailSelected);
     }
     this.clearSearchResults();
   }

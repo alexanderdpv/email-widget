@@ -6,7 +6,7 @@ import {
 } from '../../constants/index.js';
 import axios from 'axios';
 import EmailInput from '../EmailInput';
-import Snackbar from '@material-ui/core/Snackbar';
+import EmailStatus from '../EmailStatus';
 
 class App extends Component {
   constructor(props) {
@@ -18,12 +18,12 @@ class App extends Component {
       subject: "",
       body: "",
       openNotification: false,
-      email_status: "",
+      emailStatusMessage: "",
       validForm: false,
     }
 
     this.sendEmail = this.sendEmail.bind(this);
-    this.clearFormFields = this.clearFormFields.bind(this);
+    this.resetForm = this.resetForm.bind(this);
     this.onEmailChange = this.onEmailChange.bind(this);
     this.validateFields = this.validateFields.bind(this);
   };
@@ -37,22 +37,23 @@ class App extends Component {
       .then(response => {
         switch(response.status) {
           case 200:
-            this.setState({ email_status: "Email successfully sent"});
-            this.clearFormFields();
+            this.setState({
+              emailStatusMessage: "Email successfully sent",
+              openNotification : true,
+            });
+            this.resetForm();
             break;
           default:
             break;
         };
-
-        this.setState({ openNotification : true });
       })
       .catch(error => {
         switch(error.response.status) {
           case 400:
-            this.setState({ email_status: "Invalid input"});
+            this.setState({ emailStatusMessage: "Invalid input"});
             break;
           case 500:
-            this.setState({ email_status: "Error occurred – resubmit email"});
+            this.setState({ emailStatusMessage: "Error occurred – resubmit email"});
             break;
           default:
             break;
@@ -62,12 +63,15 @@ class App extends Component {
       });
   }
 
-  clearFormFields() {
+  resetForm() {
     this.setState({
       to: "",
       cc: "",
       subject: "",
       body: "",
+      openNotification: false,
+      emailStatusMessage: "",
+      validForm: false,
     });
   }
 
@@ -75,11 +79,6 @@ class App extends Component {
     this.setState({ [key]: data });
     this.validateFields();
   };
-
-  onEmailChange(e) {
-    this.setState({ [e.target.name] : e.target.value });
-    this.validateFields();
-  }
 
   validateFields() {
     const { to, subject, body } = this.state;
@@ -91,14 +90,19 @@ class App extends Component {
     }
   }
 
+  onEmailChange(e) {
+    this.setState({ [e.target.name] : e.target.value });
+    this.validateFields();
+  }
+
   render() {
-    const { to, cc, subject, body, email_status, validForm } = this.state;
+    const { to, cc, subject, body, emailStatusMessage, validForm, openNotification } = this.state;
 
     return (
       <div className="App">
         <form name="emailForm" onSubmit={this.sendEmail}>
-          <EmailInput label="To: " name="to" value={to} onValueUpdate={this.onValueUpdate} required={true} multiple={false} ref={node => this.toInputField = node}/>
-          <EmailInput label="CC: " name="cc" value={cc} onValueUpdate={this.onValueUpdate} required={false} multiple={true} ref={node => this.ccInputField = node}/>
+          <EmailInput label="To: " name="to" value={to} onValueUpdate={this.onValueUpdate} required={true} multiple={false}/>
+          <EmailInput label="CC: " name="cc" value={cc} onValueUpdate={this.onValueUpdate} required={false} multiple={true}/>
 
           <label className="input-label">Subject: </label>
           <input type="text" name="subject" value={subject} onChange={this.onEmailChange} required/>
@@ -107,16 +111,7 @@ class App extends Component {
           <button type="submit" disabled={!validForm}>Send</button>
         </form>
 
-        <Snackbar
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          open={this.state.openNotification}
-          autoHideDuration={6000}
-          message={email_status}
-          onClose={() => {this.setState({openNotification: false})}}
-        />
+        {openNotification ? <EmailStatus message={emailStatusMessage}/> : ''}
       </div>
     );
   }
