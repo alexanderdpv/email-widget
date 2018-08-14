@@ -36,29 +36,13 @@ class EmailInput extends Component {
       search: false,
     }
 
-    this.onEmailChange = this.onEmailChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.resetState = this.resetState.bind(this);
     this.highlightSection = this.highlightSection.bind(this);
     this.hoverSelection = this.hoverSelection.bind(this);
-    this.getValue = this.getValue.bind(this);
+    this.updateValue = this.updateValue.bind(this);
   };
-
-  onEmailChange(e) {
-    this.setState({ value : e.target.value });
-
-    if (e.target.value && !e.target.value.trim().endsWith(",")) {
-      this.setState({ search_results: SEARCH_RESULTS });
-    } else {
-      this.resetState();
-    }
-
-    // Reset results if field is cleared
-    if (!e.target.value) {
-      this.resetState();
-    }
-  }
 
   onKeyUp(e) {
     e.preventDefault();
@@ -69,8 +53,8 @@ class EmailInput extends Component {
   }
 
   onKeyDown(e) {
-    const { multiple } = this.props;
-    const { user_selection, search_results, value } = this.state;
+    const { multiple, value } = this.props;
+    const { user_selection, search_results } = this.state;
 
     if (e.key === "," || e.key === " ") {
       this.resetState();
@@ -92,15 +76,21 @@ class EmailInput extends Component {
 
         // selection via search results
         if (user_selection >= 0) {
+          const emailSelected = search_results.users[user_selection].email;
+
           if (multiple) {
-            let updatedValue = value.substring(0, value.lastIndexOf(',') + 1);
-            this.setState({
-              value : updatedValue + search_results.users[user_selection].email,
-            });
+            let updatedValue = "";
+
+            if (value.includes(",")) {
+              updatedValue = value.substring(0, value.lastIndexOf(',') + 1)
+                + emailSelected;
+            } else {
+              updatedValue = emailSelected;
+            }
+
+            this.props.callback(e.target.name, updatedValue);
           } else {
-            this.setState({
-              value : search_results.users[user_selection].email,
-            });
+            this.props.callback(e.target.name, search_results.users[user_selection].email);
           }
         }
 
@@ -130,30 +120,27 @@ class EmailInput extends Component {
     this.resetState();
   }
 
-  getValue() {
-    const { multiple } = this.props;
-    const { value } = this.state;
+  updateValue(e) {
+    const { onChange } = this.props;
 
-    if (multiple) {
-      const array_value = value.split(",").map(email => email.trim()).filter(Boolean);
-      return array_value;
+    if (e.target.value && !e.target.value.trim().endsWith(",")) {
+      this.setState({ search_results: SEARCH_RESULTS });
+    } else {
+      this.resetState();
     }
-    return value;
-  }
 
-  clearValue() {
-    this.setState({ value: "" });
+    onChange(e);
   }
 
   render() {
-    const { label, name, multiple, required } = this.props;
-    const { value, search_results, user_selection } = this.state;
+    const { label, name, multiple, required, value } = this.props;
+    const { search_results, user_selection } = this.state;
 
     return (
       <div className="email-input">
         <label className="email-input-label">{label}</label>
-        <input className="email-input-field" type="text" name={name} value={value} multiple={multiple} required={required}
-          onChange={this.onEmailChange} onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}/>
+        <input className="email-input-field" type="email" name={name} value={value} multiple={multiple} required={required}
+          onChange={this.updateValue} onKeyDown={this.onKeyDown} onKeyUp={this.onKeyUp}/>
 
         {search_results ? <SearchResults search_results={search_results}
           userSelection={user_selection} highlightSection={this.highlightSection}

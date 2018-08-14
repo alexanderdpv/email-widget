@@ -15,34 +15,27 @@ class App extends Component {
 
     this.state = {
       to: "",
-      cc: [],
+      cc: "",
       subject: "",
       body: "",
       openNotification: false,
       email_status: "",
-      validForm: true,
+      validForm: false,
+      invalidFields: null,
     }
 
     this.sendEmail = this.sendEmail.bind(this);
-    this.onTextChange = this.onTextChange.bind(this);
     this.clearFormFields = this.clearFormFields.bind(this);
+    this.onEmailChange = this.onEmailChange.bind(this);
+    this.validateFields = this.validateFields.bind(this);
   };
-
-  onTextChange(e) {
-    this.setState({ [e.target.name] : e.target.value});
-  }
 
   sendEmail(e) {
     e.preventDefault();
-    const { subject, body } = this.state;
+    const { to, cc, subject, body } = this.state;
+    const ccArray = cc.split(",").map(email => email.trim()).filter(Boolean);
 
-    // TODO: Get value for autocomplete input fields
-    this.setState({
-      to: this.toInputField.getValue(),
-      cc: this.ccInputField.getValue(),
-    });
-
-    axios.post(`${PATH_BASE}${PATH_SUBMIT}`, { to: this.toInputField.getValue(), cc: this.ccInputField.getValue(), subject, body })
+    axios.post(`${PATH_BASE}${PATH_SUBMIT}`, { to, cc: ccArray, subject, body })
       .then(response => {
         switch(response.status) {
           case 200:
@@ -74,28 +67,44 @@ class App extends Component {
   clearFormFields() {
     this.setState({
       to: "",
-      cc: [],
+      cc: "",
       subject: "",
       body: "",
     });
+  }
 
-    this.toInputField.clearValue();
-    this.ccInputField.clearValue();
+  callbackChild = (key, data) => {
+    this.setState({ [key]: data });
+  };
+
+  onEmailChange(e) {
+    this.setState({ [e.target.name] : e.target.value });
+    this.validateFields();
+  }
+
+  validateFields() {
+    const { to, subject, body, validForm } = this.state;
+
+    if (!to || !subject || !body) {
+      this.setState({ validForm: false });
+    } else {
+      this.setState({ validForm: true });
+    }
   }
 
   render() {
-    const { subject, body, email_status, validForm } = this.state;
+    const { to, cc, subject, body, email_status, validForm } = this.state;
 
     return (
       <div className="App">
         <form name="emailForm" onSubmit={this.sendEmail}>
-          <EmailInput label="To: " name="to" required={true} multiple={false} ref={node => this.toInputField = node}/>
-          <EmailInput label="CC: " name="cc" required={false} multiple={true} ref={node => this.ccInputField = node}/>
+          <EmailInput label="To: " name="to" value={to} onChange={this.onEmailChange} callback={this.callbackChild} required={true} multiple={false} ref={node => this.toInputField = node}/>
+          <EmailInput label="CC: " name="cc" value={cc} onChange={this.onEmailChange} callback={this.callbackChild} required={false} multiple={true} ref={node => this.ccInputField = node}/>
 
           <label className="input-label">Subject: </label>
-          <input type="text" name="subject" value={subject} onChange={this.onTextChange} required/>
+          <input type="text" name="subject" value={subject} onChange={this.onEmailChange} required/>
 
-          <textarea name="body" value={body} onChange={this.onTextChange} required/>
+          <textarea name="body" value={body} onChange={this.onEmailChange} required/>
           <Button type="submit" variant="contained" color="primary" disabled={!validForm}>Send</Button>
         </form>
 

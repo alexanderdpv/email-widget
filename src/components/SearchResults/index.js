@@ -3,29 +3,6 @@ import './index.css';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
-const SEARCH_RESULTS = {
-  users: [
-    {
-      id: "1000",
-      email: "alexander.dpv@gmail.com",
-      firstName: "Alexander",
-      lastName: "DPV",
-    },
-    {
-      id: "1001",
-      email: "john.doe@yahoo.com",
-      firstName: "John",
-      lastName: "Doe",
-    },
-    {
-      id: "1002",
-      email: "bob.smith@gmail.com",
-      firstName: "Bob",
-      lastName: "Smith",
-    },
-  ]
-};
-
 class SearchResults extends Component {
   render() {
     const { userSelection, search_results, highlightSection, hoverSelection } = this.props;
